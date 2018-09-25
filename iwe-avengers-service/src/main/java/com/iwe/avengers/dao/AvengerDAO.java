@@ -20,4 +20,24 @@ public class AvengerDAO {
 		return mapper.get(id);
 	}
 
+	public Avenger update(Avenger avenger) {
+
+		return mapper.replace(avenger.getId(), avenger);
+	}
+
+	public Avenger create(Avenger avenger) {
+
+		String id = "IssoFoiGerado";
+		avenger.setId(id);
+
+		mapper.put(id, avenger);
+
+		return avenger;
+	}
+
+	public void remove(Avenger avenger) {
+
+		mapper.remove(avenger.getId());
+	}
+
 }
