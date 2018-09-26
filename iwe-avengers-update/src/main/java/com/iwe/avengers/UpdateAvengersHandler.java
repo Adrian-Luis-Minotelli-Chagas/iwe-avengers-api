@@ -14,25 +14,24 @@ public class UpdateAvengersHandler implements RequestHandler<Avenger, HandlerRes
 	@Override
 	public HandlerResponse handleRequest(final Avenger avenger, final Context context) {
 		
-		Avenger updatedAvenger = null;
+		Avenger avengerFound = null;
 		
 		context.getLogger().log("[#] - Seaching avenger by id: " + avenger.getId());
 		
-		if(dao.search(avenger.getId()) != null) {
+		avengerFound = dao.search(avenger.getId());
+		
+		if(avengerFound == null) {
 			
-			context.getLogger().log("[#] - Avenger found, updating...");
-			
-			updatedAvenger = dao.update(avenger);
-			
-			context.getLogger().log("[#] - Avenger sucessfully updated !");
-		}
-		else {
 			throw new AvengerNotFoundException("[NotFound] - Avenger id: " + avenger.getId());
 		}
 		
+		context.getLogger().log("[#] - Avenger found, updating...");
+		
+		Avenger updatedAvenger = dao.save(avengerFound);
+		
+		context.getLogger().log("[#] - Avenger sucessfully updated !");
+		
 		final HandlerResponse response = HandlerResponse.builder().setObjectBody(updatedAvenger).build();
-
-		context.getLogger().log("[#] - Avenger Updated!");
 
 		return response;
 	}

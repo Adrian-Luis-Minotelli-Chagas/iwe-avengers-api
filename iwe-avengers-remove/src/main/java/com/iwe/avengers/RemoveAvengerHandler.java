@@ -18,17 +18,16 @@ public class RemoveAvengerHandler implements RequestHandler<Avenger, HandlerResp
 
 		final Avenger avengerFound = dao.search(avenger.getId());
 
-		if (avengerFound != null) {
+		if (avengerFound == null) {
 			
-			context.getLogger().log("[#] - Deleting Avenger...");
-			
-			dao.remove(avengerFound);
-			
-			context.getLogger().log("[#] - Avenger deleted !");
-		}
-		else {
 			throw new AvengerNotFoundException("[NotFound] - Avenger id: " + avenger.getId());
 		}
+		
+		context.getLogger().log("[#] - Deleting Avenger...");
+		
+		dao.remove(avengerFound);
+		
+		context.getLogger().log("[#] - Avenger deleted !");
 
 		final HandlerResponse response = HandlerResponse.builder().setObjectBody(null).build();
 
