@@ -39,9 +39,21 @@ Then status 404
 
 Scenario: Delete a Avenger by Id
 
-Given path 'avengers', 'aaaa-bbbb-cccc-dddd'
+Given path 'avengers'
+And request {name: 'Captain America', secretIdentity: 'Steves Rogers'}
+When method post
+Then status 201 
+And match response == {id: '#string', name: 'Captain America', secretIdentity: 'Steves Rogers'}
+
+* def savedAvenger = response
+
+Given path 'avengers', savedAvenger.id
 When method delete
 Then status 204
+
+Given path 'avengers', savedAvenger.id
+When method get
+Then status 404
 
 Scenario: Avenger not found on Update
 
@@ -52,11 +64,28 @@ Then status 404
 
 Scenario: Update a Avenger by Id
 
-Given path 'avengers', 'aaaa-bbbb-cccc-dddd'
-And request {name: 'Captain Americas', secretIdentity: 'Steves Roger'}
+Given path 'avengers'
+And request {name: 'Captain', secretIdentity: 'Steve'}
+When method post
+Then status 201 
+And match response == {id: '#string', name: 'Captain', secretIdentity: 'Steve'}
+
+* def createdAvenger = response
+
+Given path 'avengers', createdAvenger.id
+And request {name: 'Captain America', secretIdentity: 'Steves Rogers'}
 When method put
 Then status 200
-And match response == {id: '#string', name: '#string', secretIdentity: '#string'}
+And match $.id == createdAvenger.id
+And match $.name == 'Captain America'
+And match $.secretIdentity == 'Steves Rogers'
+
+* def updatedAvenger = $
+
+Given path 'avengers', updatedAvenger.id
+When method get
+Then status 200
+And match $ == updatedAvenger
 
 Scenario: Update a Avenger by Id and get Bad Request
 
