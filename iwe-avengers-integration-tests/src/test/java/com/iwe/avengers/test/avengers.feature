@@ -157,6 +157,15 @@ When method put
 Then status 400
 
 
+Scenario: Deletes all Avengers
+
+#Delete all Avenger
+Given path 'avengers'
+And header Authorization = 'Bearer ' + token
+When method delete
+Then status 204
+
+
 
 
 
